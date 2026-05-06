@@ -5,7 +5,7 @@ import NavLink from "./NavLink";
 
 const Navbar = () => {
   return (
-    <nav className="flex bg-white items-center justify-between p-5 shadow-xl sticky top-0 z-40 container mx-auto mt-10">
+    <nav className="flex bg-white items-center justify-between p-5 sticky top-0 z-40 container mx-auto mt-10">
       <div></div>
       <div className="flex items-center justify-center">
         {/* // * Method 2 and easy way for apply dynamic style */}
