@@ -1,20 +1,24 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { Check } from "@gravity-ui/icons";
+import { Check, Eye, EyeSlash } from "@gravity-ui/icons";
 import {
   Button,
   Description,
   FieldError,
   Form,
   Input,
+  InputGroup,
   Label,
   TextField,
 } from "@heroui/react";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 const LoginPage = () => {
+  const [isVisible, setIsVisible] = useState(false);
   const {
     register,
     handleSubmit,
@@ -30,7 +34,7 @@ const LoginPage = () => {
       callbackURL: "/",
     });
 
-    console.log(res, error)
+    console.log(res, error);
 
     if (error) {
       alert(error.message || "An error occurred during login.");
@@ -44,7 +48,18 @@ const LoginPage = () => {
     // console.log("Form Data:", data);
   };
 
-  console.log("Watched Values:", watch("email"), watch("password"));
+  const handleGoogleSignin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+  };
+  const handleGithubSignin = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+    });
+  };
+
+  // console.log("Watched Values:", watch("email"), watch("password"));
 
   return (
     <div className="container mx-auto min-h-[70vh] flex justify-center items-center  rounded-xl">
@@ -67,7 +82,7 @@ const LoginPage = () => {
           <Input placeholder="Your Email" {...register("email")} />
           <FieldError />
         </TextField>
-        <TextField
+        {/* <TextField
           isRequired
           minLength={8}
           //   name="password"
@@ -92,6 +107,32 @@ const LoginPage = () => {
             Must be at least 8 characters with 1 uppercase and 1 number
           </Description>
           <FieldError />
+        </TextField> */}
+        <TextField className="w-full " name="password">
+          <Label>Password</Label>
+          <InputGroup>
+            <InputGroup.Input
+              className="w-full"
+              type={isVisible ? "text" : "password"}
+              placeholder="Your Password"
+              {...register("password")}
+            />
+            <InputGroup.Suffix className="pr-0">
+              <Button
+                isIconOnly
+                aria-label={isVisible ? "Hide password" : "Show password"}
+                size="sm"
+                variant="ghost"
+                onPress={() => setIsVisible(!isVisible)}
+              >
+                {isVisible ? (
+                  <Eye className="size-4" />
+                ) : (
+                  <EyeSlash className="size-4" />
+                )}
+              </Button>
+            </InputGroup.Suffix>
+          </InputGroup>
         </TextField>
 
         <Button type="submit" className="w-full">
@@ -104,6 +145,24 @@ const LoginPage = () => {
           <Link href="/register" className="text-red-600">
             Register
           </Link>
+        </div>
+        <div>
+          <h2 className="font-semibold text-xl text-center">OR</h2>
+          {/* <h2 className="font-semibold text-xl text-center">Login With</h2> */}
+          <div className="flex flex-col gap-5 mt-5">
+            <button
+              className="flex rounded-lg btn items-center gap-2 text-center border-blue-500 text-blue-500 bg-transparent"
+              onClick={handleGoogleSignin}
+            >
+              <FaGoogle /> Login with Google
+            </button>
+            <button
+              className="flex rounded-lg btn items-center gap-2 text-center border-black bg-transparent"
+              onClick={handleGithubSignin}
+            >
+              <FaGithub /> Login with GitHub
+            </button>
+          </div>
         </div>
       </Form>
     </div>

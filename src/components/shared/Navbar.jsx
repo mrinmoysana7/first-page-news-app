@@ -1,9 +1,22 @@
+"use client";
+
 import { Button, Link } from "@heroui/react";
 import Image from "next/image";
 import avatar from "@/assets/user.png";
 import NavLink from "./NavLink";
+import { signOut, useSession } from "@/lib/auth-client";
+//   import { authClient } from "@/lib/auth-client"
 
 const Navbar = () => {
+  const { data, isPending } = useSession();
+  // if (isPending) {
+  //   return <span className="loading loading-ball loading-lg"></span>;
+  // }
+  const user = data?.user;
+
+  // const { data: session } = authClient.useSession()
+  // const user = session?.user;
+
   return (
     <nav className="flex bg-white items-center justify-between p-5 sticky top-0 z-40 container mx-auto mt-10">
       <div></div>
@@ -28,14 +41,39 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="flex items-center gap-2">
-        <Image src={avatar} width={40} height={40} alt=""></Image>
-        <Link href={"/login"}>
-          <Button className="bg-[#403F3F] px-10 rounded-sm ">Login</Button>
-        </Link>
+        {isPending ? (
+          <span className="loading loading-spinner  text-warning"></span>
+        ) : user ? (
+          <>
+            <p className="text-[10px] md:text-lg">Welcome, {user.name}</p>{" "}
+            <Image
+              src={user.image || avatar}
+              width={40}
+              height={40}
+              alt=""
+              className="rounded-full"
+            ></Image>
+            <Button
+              className="px-10 rounded-sm btn btn-secondary"
+              onClick={() => signOut()}
+            >
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Link href="/login">
+            <Button className="px-10 rounded-sm btn btn-primary">Login</Button>
+          </Link>
+        )}
       </div>
     </nav>
   );
 };
+
+//  <Image src={avatar} width={40} height={40} alt=""></Image>
+//         <Link href={"/login"}>
+//           <Button className="bg-[#403F3F] px-10 rounded-sm ">Login</Button>
+//         </Link>
 
 export default Navbar;
 
